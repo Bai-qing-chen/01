@@ -26,7 +26,7 @@
           <el-row>
             <el-col size="medium" :push="12">
               <el-button type="primary" @click="login">登录</el-button>
-              <el-button type="info">重置</el-button>
+              <el-button type="info" @click="reset">重置</el-button>
             </el-col>
           </el-row>
         </el-form>
@@ -39,26 +39,30 @@
 export default {
   /*方法*/
   methods: {
+    reset(){
+       this.$refs.formDM.resetFields();
+    },
     login() {
+      /*校验触发完后的回调函数*/
       this.$refs.formDM.validate(async v => {
         // console.log(v)
         if (v === true) {
-          //  console.log(this.loginFrom)
-          //  return
-          const 
-            {data:{data:{token},meta:{msg,status}}}
-          = await this.$http.post('/login', this.loginFrom)
-            console.log(token,msg,status)
+          const {
+            data: {
+              data: { token },
+              meta: { msg, status }
+            }
+          } = await this.$http.post('/login', this.loginFrom)
+          // console.log(token, msg, status)
           if (status === 200) {
-           
             this.$message({
               message: msg,
               type: 'success'
             })
-          window.sessionStorage.setItem('token',token)
-          this.$router.push('/home')
-          }else{
-              this.$message({
+            window.sessionStorage.setItem('token', token)
+            this.$router.push('/home')
+          } else {
+            this.$message({
               message: msg,
               type: 'error'
             })
@@ -71,16 +75,16 @@ export default {
   data() {
     return {
       labelPosition: 'right',
+      /*初始化账号密码*/
       loginFrom: {
         username: '',
         password: ''
       },
       /*校验*/
       rules: {
-        username: [
-          { required: true, message: '请输入账号', trigger: 'blur' }
-          //  { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-        ],
+        /*检验初始化账号密码*/
+
+        username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [
           { required: true, message: '请输入用户密码', trigger: 'blur' }
         ]

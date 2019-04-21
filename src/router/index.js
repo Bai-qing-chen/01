@@ -23,7 +23,7 @@ const router = new Router({
 router.beforeEach((to,from,next)=>{
   const token=window.sessionStorage.getItem('token')
   // console.log(token)
-  if(to.path !=='/' && token ===null){
+  if(to.path !=='/' && token !==null){
     // console.log(111)
     return next('/')
   }
