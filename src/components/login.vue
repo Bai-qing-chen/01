@@ -1,40 +1,89 @@
 <template>
-  <div id="login">
-    <div class="box1">
-      <img src="../assets/logo.png" alt class="mini">
-    </div>
-    <div>
-      <el-form
-        :label-position="labelPosition"
-        label-width="40px"
-        :model="formLabelAlign"
-        id="biaodan"
-      >
-        <el-form-item label="账号">
-          <el-input v-model="formLabelAlign.name"></el-input>
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="formLabelAlign.region"></el-input>
-        </el-form-item>
-        <el-row>
-          <el-col size="medium">
-            <el-button type="primary" class="widt">登录</el-button>
-          </el-col>
-        </el-row>
-      </el-form>
+  <div id="loginbox">
+    <div id="login">
+      <div class="box1">
+        <img src="../assets/logo.png" alt class="mini">
+      </div>
+      <div>
+        <el-form
+          ref="formDM"
+          :label-position="labelPosition"
+          :rules="rules"
+          label-width="60px"
+          :model="loginFrom"
+          id="biaodan"
+        >
+          <el-form-item label="账号" prop="username">
+            <el-input v-model="loginFrom.username">
+              <i slot="prefix" class="el-input__icon icon iconfont icon-user"></i>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="loginFrom.password" show-password>
+              <i slot="prefix" class="el-input__icon icon iconfont icon-3702mima"></i>
+            </el-input>
+          </el-form-item>
+          <el-row>
+            <el-col size="medium" :push="12">
+              <el-button type="primary" @click="login">登录</el-button>
+              <el-button type="info">重置</el-button>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  /*方法*/
+  methods: {
+    login() {
+      this.$refs.formDM.validate(async v => {
+        // console.log(v)
+        if (v === true) {
+          //  console.log(this.loginFrom)
+          //  return
+          const 
+            {data:{data:{token},meta:{msg,status}}}
+          = await this.$http.post('/login', this.loginFrom)
+            console.log(token,msg,status)
+          if (status === 200) {
+           
+            this.$message({
+              message: msg,
+              type: 'success'
+            })
+          window.sessionStorage.setItem('token',token)
+          this.$router.push('/home')
+          }else{
+              this.$message({
+              message: msg,
+              type: 'error'
+            })
+          }
+        }
+      })
+    }
+  },
+  /*数据存储*/
   data() {
     return {
       labelPosition: 'right',
-      formLabelAlign: {
-        name: '',
-        region: '',
-        type: ''
+      loginFrom: {
+        username: '',
+        password: ''
+      },
+      /*校验*/
+      rules: {
+        username: [
+          { required: true, message: '请输入账号', trigger: 'blur' }
+          //  { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入用户密码', trigger: 'blur' }
+        ]
       }
     }
   }
@@ -42,40 +91,44 @@ export default {
 </script>
 
 <style lang="less">
-#login {
-  height: 400px;
-  width: 400px;
-  padding: 50px 50px;
-  box-sizing: border-box;
-  background: #fff;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 10px;
-  .box1 {
-    width: 150px;
-    height: 150px;
-    background: #eee;
-    border-radius: 50%;
+#loginbox {
+  height: 100%;
+  background: #2b4b6b;
+  #login {
+    height: 400px;
+    width: 400px;
+    padding: 50px 50px;
+    box-sizing: border-box;
+    background: #fff;
     position: absolute;
     left: 50%;
+    top: 50%;
     transform: translate(-50%, -50%);
-    padding: 10px 10px;
-    overflow: hidden;
-    box-shadow: 0 0 10px #eee;
-    .mini {
-      //   width: 100%;
-      background: #fff;
+    border-radius: 10px;
+    .box1 {
+      width: 150px;
+      height: 150px;
+      background: #eee;
       border-radius: 50%;
-      height: 100%;
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 10px 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px #eee;
+      .mini {
+        //   width: 100%;
+        background: #fff;
+        border-radius: 50%;
+        height: 100%;
+      }
+    }
+    #biaodan {
+      padding-top: 100px;
     }
   }
-  #biaodan {
-    padding-top: 100px;
+  .widt {
+    width: 100%;
   }
-}
-.widt {
-  width: 100%;
 }
 </style>
