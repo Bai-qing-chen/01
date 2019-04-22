@@ -37,13 +37,13 @@
 
 <script>
 export default {
-  /*方法*/
+  /* 方法 */
   methods: {
     reset() {
       this.$refs.formDM.resetFields()
     },
     login() {
-      /*校验触发完后的回调函数*/
+      /* 校验触发完后的回调函数 */
       this.$refs.formDM.validate(async v => {
         // console.log(v)
 
@@ -60,29 +60,27 @@ export default {
               message: msg,
               type: 'error'
             })
-          } else {
-            this.$message.success(msg)
-            this.$router.push('/home')
-            window.sessionStorage.setItem('token', data.token)
-
-            
           }
+
+          this.$message.success(msg)
+          window.sessionStorage.setItem('token', data.token)
+          this.$router.push('/home')
         }
       })
     }
   },
-  /*数据存储*/
+  /* 数据存储 */
   data() {
     return {
       labelPosition: 'right',
-      /*初始化账号密码*/
+      /* 初始化账号密码 */
       loginFrom: {
         username: 'admin',
         password: '123456'
       },
-      /*校验*/
+      /* 校验 */
       rules: {
-        /*检验初始化账号密码*/
+        /* 检验初始化账号密码 */
 
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [
