@@ -25,7 +25,7 @@
           </el-form-item>
           <el-row>
             <el-col size="medium" :push="12">
-              <el-button type="primary" @click="login">登录</el-button>
+              <el-button type="primary" @click="login()">登录</el-button>
               <el-button type="info" @click="reset">重置</el-button>
             </el-col>
           </el-row>
@@ -39,33 +39,33 @@
 export default {
   /*方法*/
   methods: {
-    reset(){
-       this.$refs.formDM.resetFields();
+    reset() {
+      this.$refs.formDM.resetFields()
     },
     login() {
       /*校验触发完后的回调函数*/
       this.$refs.formDM.validate(async v => {
         // console.log(v)
+
         if (v === true) {
           const {
             data: {
-              data: { token },
+              data,
               meta: { msg, status }
             }
           } = await this.$http.post('/login', this.loginFrom)
-          // console.log(token, msg, status)
-          if (status === 200) {
-            this.$message({
-              message: msg,
-              type: 'success'
-            })
-            window.sessionStorage.setItem('token', token)
-            this.$router.push('/home')
-          } else {
-            this.$message({
+
+          if (status !== 200) {
+            return this.$message({
               message: msg,
               type: 'error'
             })
+          } else {
+            this.$message.success(msg)
+            this.$router.push('/home')
+            window.sessionStorage.setItem('token', data.token)
+
+            
           }
         }
       })
@@ -77,8 +77,8 @@ export default {
       labelPosition: 'right',
       /*初始化账号密码*/
       loginFrom: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
       /*校验*/
       rules: {
