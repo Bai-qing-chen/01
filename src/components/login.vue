@@ -72,8 +72,8 @@ export default {
     return {
       labelPosition: 'right',
       loginFrom: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
       /*校验*/
       rules: {
