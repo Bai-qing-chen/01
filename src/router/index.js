@@ -7,6 +7,7 @@ import Login from '@/components/login.vue'
 
 import Home from '@/components/home/home.vue'
 
+import Wol from '@/components/homeChild/wolCom.vue'
 // import ElementUI from 'element-ui'
 // import 'element-ui/lib/theme-chalk/index.css'
 
@@ -15,7 +16,16 @@ import Home from '@/components/home/home.vue'
 Vue.use(Router)
 
 const router = new Router({
-  routes: [{ path: '/', component: Login }, { path: '/home', component: Home }]
+  routes: [
+    { path: '/login', component: Login },
+    { path: '/', redirect: '/home' },
+    {
+      path: '/home',
+      component: Home,
+      redirect: '/volcom',
+      children: [{ path: '/volcom', component: Wol }]
+    }
+  ]
 })
 /* 路由守卫 */
 

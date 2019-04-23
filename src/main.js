@@ -17,9 +17,25 @@ Vue.use(ElementUI)
 
 /* 同意请求url */
 axios.defaults.baseURL = 'http://127.0.0.1:11333/api/private/v1/'
-/**/
 
 Vue.prototype.$http = axios
+/* 请求拦截器 */
+axios.interceptors.request.use(
+  function(config) {
+    /* 请求对象 */
+
+    console.log(config)
+    const token = window.sessionStorage.getItem('token')
+    /* 设置头信息 */
+
+    config.headers.Authorization = token
+    return config
+  },
+  function(error) {
+    // Do something with request error
+    return Promise.reject(error)
+  }
+)
 
 /* eslint-disable no-new */
 new Vue({
