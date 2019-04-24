@@ -92,7 +92,7 @@ export default {
         }
       } = await this.$http.get('/menus')
       /* 侧边栏接受请求数据 */
-      console.log(data)
+      // console.log(data)
       if (status === 200) {
         this.slidList = data
       }
@@ -120,7 +120,7 @@ export default {
 #home {
   height: 100%;
   width: 100%;
-  background: #ccc;
+  // background: #ccc;
   .el-container {
     height: 100%;
     /* 头部 */

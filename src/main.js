@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import moment from 'moment'
 
 import axios from 'axios'
 import ElementUI from 'element-ui'
@@ -13,6 +14,7 @@ import '@/assets/css/index.css'
 
 /* 引入icon */
 import '@/assets/fonts/iconfont.css'
+
 Vue.use(ElementUI)
 
 /* 同意请求url */
@@ -24,7 +26,7 @@ axios.interceptors.request.use(
   function(config) {
     /* 请求对象 */
 
-    console.log(config)
+    // console.log(config)
     const token = window.sessionStorage.getItem('token')
     /* 设置头信息 */
 
@@ -37,6 +39,9 @@ axios.interceptors.request.use(
   }
 )
 
+Vue.filter('fmtDate', function(v) {
+  return moment(v).format('YYYY-MM-DD hh:mm:ss')
+})
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
