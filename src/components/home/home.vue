@@ -51,7 +51,7 @@
                   >{{item2.authName}}</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-            </el-menu>
+            </el-menu>  
           </el-col>
         </el-aside>
         <el-main>
