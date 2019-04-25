@@ -5,6 +5,54 @@
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
+
+    <!-- 添加用户 -->
+    <el-dialog
+      title="添加用户"
+      :visible.sync="addDialogVisible"
+      width="30%"
+      @close="$refs.ruleForm.resetFields()"
+    >
+      <el-form :rules="addrules" ref="ruleForm" label-width="80px" :model="addFrom">
+        <el-form-item label="名称" prop="username">
+          <el-input v-model="addFrom.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addFrom.password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addFrom.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" prop="mobile" autocomplete="off">
+          <el-input v-model="addFrom.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="adduser()">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 添加结尾 -->
+    <!-- 编辑开始 -->
+
+    <el-dialog title="提示" :visible.sync="editConfm" width="30%">
+      <el-form label-width="80px" :model="editFrm">
+        <el-form-item label="名称">
+          <el-input v-model="editFrm.username" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="editFrm.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱">
+          <el-input v-model="editFrm.email"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editConfm = false">取 消</el-button>
+          <el-button type="primary" @click="editUser()">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 编辑结尾 -->
     <el-card class="box-card">
       <el-row :gutter="20">
         <el-col :span="8">
@@ -23,18 +71,6 @@
         <el-col :span="8">
           <div class="grid-content bg-purple-light">
             <el-button type="primary" @click="addDialogVisible=true">添加用户</el-button>
-            <el-dialog
-              title="提示"
-              :visible.sync="addDialogVisible"
-              width="30%"
-              :before-close="handleClose"
-            >
-              <span>这是一段信息</span>
-              <span slot="footer" class="dialog-footer">
-                <el-button @click="addDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
-              </span>
-            </el-dialog>
           </div>
         </el-col>
       </el-row>
@@ -55,9 +91,22 @@
           ></el-switch>
         </el-table-column>
         <el-table-column prop="mg_state" label="操作">
-          <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete"></el-button>
-          <el-button type="warning" size="mini" icon="el-icon-share"></el-button>
+          <template slot-scope="info">
+            <el-button
+              type="primary"
+              size="mini"
+              icon="el-icon-edit"
+              @click="edituser(info.row.id)"
+            ></el-button>
+
+            <el-button
+              type="danger"
+              size="mini"
+              icon="el-icon-delete"
+              @click="deleteuser(info.row.id)"
+            ></el-button>
+            <el-button type="warning" size="mini" icon="el-icon-share"></el-button>
+          </template>
         </el-table-column>
       </el-table>
       <el-pagination
@@ -84,6 +133,68 @@ export default {
     this.getList()
   },
   methods: {
+    // 修改
+    editUser(id) {
+      console.log(id)
+      // this.$http.put('')
+    },
+    async edituser(id) {
+      this.editConfm = true
+      console.log(id)
+      const {
+        data: {
+          data,
+          meta: { msg, status }
+        }
+      } = await this.$http.get(`users/${id}`)
+      if (status === 200) {
+        this.editFrm = data
+      }
+      console.log(data, msg, status)
+    },
+    // 删除用户方法
+    deleteuser(id) {
+      this.$confirm('你确定要删除此用户吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        // console.log(id)
+        const {
+          data: {
+            meta: { msg }
+          }
+        } = await this.$http.delete(`/users/${id}`)
+        if (this.togo.pagenum > 1 && this.userlist.length !== 0) {
+          this.togo.pagenum--
+        }
+
+        this.$message({
+          type: 'success',
+          message: msg
+        })
+        this.getList()
+      })
+    },
+    // 添加用户方法
+    adduser() {
+      this.$refs.ruleForm.validate(async valid => {
+        console.log(valid)
+        if (valid) {
+          const {
+            data: {
+              meta: { msg, status }
+            }
+          } = await this.$http.post('/users', this.addFrom)
+          if (status === 201) {
+            this.$message.success(msg)
+            this.addDialogVisible = false
+            this.getList()
+          }
+        }
+      })
+    },
+
     dialogVisible() {},
     handleClose() {
       //   this.$confirm('确认关闭？')
@@ -92,9 +203,11 @@ export default {
       //     })
       //     .catch(_ => {})
     },
+    // 每页条数方法
     handleSizeChange(val) {
       //   console.log(`每页 ${val} 条`)
     },
+    // 当前第几页
     handleCurrentChange(val) {
       //   console.log(`当前页: ${val}`)
       this.togo.pagenum = val
@@ -115,8 +228,41 @@ export default {
     }
   },
   data() {
+    var mobiles = (rule, value, callback) => {
+      if (!/^1[35789]\d{9}$/.test(value)) {
+        // 校验失败(请给页面提示错误信息)
+        return callback(new Error('手机号码格式不正确'))
+      }
+      // 校验成功，继续执行
+      callback()
+      console.log(value)
+    }
     return {
+      /* 修改默认开关 */
+      editConfm: false,
+      editFrm: {
+        username: '',
+        mobile: '',
+        username: ''
+      },
+      /* 添加用户信息 */
       addDialogVisible: false,
+      addFrom: {
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
+      },
+      addrules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        email: [{ required: true, message: '请输入邮箱 ', trigger: 'blur' }],
+        mobile: [{ validator: mobiles, trigger: 'blur' }]
+      },
+      // 添加用户信息结尾
+
       userlist: [],
       // 一共多少页
       tol: 0,
