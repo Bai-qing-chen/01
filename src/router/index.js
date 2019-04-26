@@ -2,16 +2,16 @@ import Vue from 'vue'
 /* 路由 */
 
 import Router from 'vue-router'
+/* 登录页 显示 表单布局 以及点击登录 */
 
 import Login from '@/components/login.vue'
+/* 后台首页显示 布局 头部 侧边栏显示 */
 
 import Home from '@/components/home/home.vue'
+/* 用户列表展示 添加 删除 修改  */
 
 import Wol from '@/components/homeChild/wolCom.vue'
-// import ElementUI from 'element-ui'
-// import 'element-ui/lib/theme-chalk/index.css'
-
-// Vue.use(ElementUI)
+import Rights from '@/components/homeChild/rights'
 
 Vue.use(Router)
 
@@ -22,8 +22,11 @@ const router = new Router({
     {
       path: '/home',
       component: Home,
-      redirect: '/volcom',
-      children: [{ path: '/volcom', component: Wol }]
+      redirect: '/users',
+      children: [
+        { path: '/users', component: Wol },
+        { path: '/rights', component: Rights }
+      ]
     }
   ]
 })

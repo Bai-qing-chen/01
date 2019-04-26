@@ -1,10 +1,6 @@
 <template>
   <div>
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+    <crad-m></crad-m>
 
     <!-- 添加用户 -->
     <el-dialog
@@ -135,21 +131,25 @@ export default {
   methods: {
     // 修改
     editUser(id) {
-    //   console.log(id)
+      //   console.log(id)
       this.$refs.EditruleForm.validate(async valid => {
         // console.log(valid)
         if (valid === true) {
-          const {data:{meta:{status,msg}}} = await this.$http.put(`users/${id}`, this.editFrm)
-        //   console.log(status,msg)
-          if(status===200){
-              this.$message.success(msg)
-              this.editConfm=false
-              this.getList()
+          const {
+            data: {
+              meta: { status, msg }
+            }
+          } = await this.$http.put(`users/${id}`, this.editFrm)
+          //   console.log(status,msg)
+          if (status === 200) {
+            this.$message.success(msg)
+            this.editConfm = false
+            this.getList()
           }
         }
       })
     },
-    /* 点击编辑按钮传入id 并打开会话框 发送获取个人用户信息请求 并显示到input框*/
+    /* 点击编辑按钮传入id 并打开会话框 发送获取个人用户信息请求 并显示到input框 */
 
     async edituser(id) {
       this.editConfm = true
@@ -169,7 +169,7 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(async () => {
+      }).then(async() => {
         // console.log(id)
         const {
           data: {
@@ -231,7 +231,7 @@ export default {
           meta: { msg, status }
         }
       } = await this.$http.get('/users', { params: this.togo })
-    //   console.log(data, msg, status)
+      //   console.log(data, msg, status)
       if (status === 200) {
         this.tol = data.total
         this.userlist = data.users

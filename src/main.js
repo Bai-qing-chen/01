@@ -11,6 +11,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import '@/assets/css/index.css'
+import Gogx from '@/components/homeChild/commonality'
 
 /* 引入icon */
 import '@/assets/fonts/iconfont.css'
@@ -38,10 +39,13 @@ axios.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+/* 时间过滤器 */
 
 Vue.filter('fmtDate', function(v) {
   return moment(v).format('YYYY-MM-DD hh:mm:ss')
 })
+/* 全局共享组件 */
+Vue.component('crad-m', Gogx)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

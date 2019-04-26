@@ -47,11 +47,12 @@
                   <el-menu-item
                     :index="item2.id+''"
                     v-for="item2 in item.children"
+                    @click="$router.push('/'+item2.path)"
                     :key="item2.id"
                   >{{item2.authName}}</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-            </el-menu>  
+            </el-menu>
           </el-col>
         </el-aside>
         <el-main>
