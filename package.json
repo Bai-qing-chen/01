@@ -9,13 +9,14 @@
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
     "pack": "node build/build.js",
-    "i": "eslint --ext .js,.vue src --fix"
+    "lintfix": "eslint --ext .js,.vue src --fix"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.7.2",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
+    "moment": "^2.24.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.6"
   },
