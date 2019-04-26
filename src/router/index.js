@@ -12,6 +12,7 @@ import Home from '@/components/home/home.vue'
 
 import Wol from '@/components/homeChild/wolCom.vue'
 import Rights from '@/components/homeChild/rights'
+import Roles from '@/components/roles/roles'
 
 Vue.use(Router)
 
@@ -25,7 +26,8 @@ const router = new Router({
       redirect: '/users',
       children: [
         { path: '/users', component: Wol },
-        { path: '/rights', component: Rights }
+        { path: '/rights', component: Rights },
+        { path: '/roles', component: Roles }
       ]
     }
   ]

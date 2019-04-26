@@ -1,6 +1,6 @@
 <template>
   <div id="quanXian">
-    <crad-m></crad-m>
+    <crad-m nm="权限"></crad-m>
     <el-card class="box-card">
       <el-table :data="tableData" style="width: 100%">
         <el-table-column type="index" width="180"></el-table-column>
@@ -32,7 +32,7 @@ export default {
           meta: { msg, status }
         }
       } = await this.$http.get('rights/list')
-      console.log(data, msg, status)
+    //   console.log(data, msg, status)
       if (status === 200) {
         this.tableData = data
       }

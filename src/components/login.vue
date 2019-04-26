@@ -54,7 +54,7 @@ export default {
               meta: { msg, status }
             }
           } = await this.$http.post('/login', this.loginFrom)
-
+console.log(data)
           if (status !== 200) {
             return this.$message({
               message: msg,
@@ -64,7 +64,7 @@ export default {
 
           this.$message.success(msg)
           window.sessionStorage.setItem('token', data.token)
-          this.$router.push('/home')
+          this.$router.push('/home') 
         }
       })
     }

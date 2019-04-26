@@ -1,6 +1,6 @@
 <template>
   <div>
-    <crad-m></crad-m>
+    <crad-m nm="用户"></crad-m>
 
     <!-- 添加用户 -->
     <el-dialog
