@@ -36,12 +36,12 @@
     <!-- 编辑开始 -->
 
     <el-dialog title="提示" :visible.sync="editConfm" width="30%">
-      <el-form label-width="80px" :model="editFrm">
+      <el-form label-width="80px" :model="editFrm" :rules="editrules" ref="EditruleForm">
         <el-form-item label="名称">
           <el-input v-model="editFrm.username" disabled></el-input>
         </el-form-item>
-        <el-form-item label="手机号">
-          <el-input v-model="editFrm.mobile"></el-input>
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="editFrm.mobile" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="邮箱">
           <el-input v-model="editFrm.email"></el-input>
@@ -49,7 +49,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editConfm = false">取 消</el-button>
-          <el-button type="primary" @click="editUser()">确 定</el-button>
+        <el-button type="primary" @click="editUser(editFrm.id)">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 编辑结尾 -->
@@ -135,12 +135,24 @@ export default {
   methods: {
     // 修改
     editUser(id) {
-      console.log(id)
-      // this.$http.put('')
+    //   console.log(id)
+      this.$refs.EditruleForm.validate(async valid => {
+        // console.log(valid)
+        if (valid === true) {
+          const {data:{meta:{status,msg}}} = await this.$http.put(`users/${id}`, this.editFrm)
+        //   console.log(status,msg)
+          if(status===200){
+              this.$message.success(msg)
+              this.editConfm=false
+              this.getList()
+          }
+        }
+      })
     },
+    /* 点击编辑按钮传入id 并打开会话框 发送获取个人用户信息请求 并显示到input框*/
+
     async edituser(id) {
       this.editConfm = true
-      console.log(id)
       const {
         data: {
           data,
@@ -150,7 +162,6 @@ export default {
       if (status === 200) {
         this.editFrm = data
       }
-      console.log(data, msg, status)
     },
     // 删除用户方法
     deleteuser(id) {
@@ -179,7 +190,7 @@ export default {
     // 添加用户方法
     adduser() {
       this.$refs.ruleForm.validate(async valid => {
-        console.log(valid)
+        // console.log(valid)
         if (valid) {
           const {
             data: {
@@ -220,7 +231,7 @@ export default {
           meta: { msg, status }
         }
       } = await this.$http.get('/users', { params: this.togo })
-      console.log(data, msg, status)
+    //   console.log(data, msg, status)
       if (status === 200) {
         this.tol = data.total
         this.userlist = data.users
@@ -239,11 +250,14 @@ export default {
     }
     return {
       /* 修改默认开关 */
+      editrules: {
+        mobile: [{ validator: mobiles, trigger: 'blur' }]
+      },
       editConfm: false,
       editFrm: {
         username: '',
         mobile: '',
-        username: ''
+        email: ''
       },
       /* 添加用户信息 */
       addDialogVisible: false,
