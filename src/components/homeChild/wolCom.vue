@@ -53,6 +53,28 @@
       </span>
     </el-dialog>
     <!-- 编辑结尾 -->
+    <!-- 分配角色 -->
+    <el-dialog title="分配角色" :visible.sync="userPei" width="30%">
+      <el-form label-width="80px" :model="userP" :rules="fenPrules">
+        <el-form-item label="当前用户">{{userP.username}}</el-form-item>
+        <el-form-item label="目前角色">{{userP.role_name}}</el-form-item>
+        <el-form-item label="分配新角色" prop="role_id">
+          <el-select v-model="userP.role_id" clearable placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="userPei = false">取 消</el-button>
+        <el-button type="primary" @click="editFen">确 定</el-button>
+      </span>
+    </el-dialog>
+
     <el-card class="box-card">
       <el-row :gutter="20">
         <el-col :span="8">
@@ -78,6 +100,7 @@
       <el-table stripe border :data="userlist" style="width: 100%">
         <el-table-column prop="username" label="用户名" width="180"></el-table-column>
         <el-table-column prop="email" label="邮箱" width="180"></el-table-column>
+        <el-table-column prop="role_name" label="身份" width="180"></el-table-column>
         <el-table-column prop="mobile" label="手机号" width="180"></el-table-column>
         <el-table-column prop="create_time" label="用户注册时间" width="180">
           <template slot-scope="user">{{user.row.create_time | fmtDate }}</template>
@@ -88,6 +111,7 @@
             inactive-color="#ff4949"
             v-model="status.row.mg_state"
             slot-scope="status"
+            @change="kGuan(status.row)"
           ></el-switch>
         </el-table-column>
         <el-table-column prop="mg_state" label="操作">
@@ -105,7 +129,7 @@
               icon="el-icon-delete"
               @click="deleteuser(info.row.id)"
             ></el-button>
-            <el-button type="warning" size="mini" icon="el-icon-share"></el-button>
+            <el-button type="warning" size="mini" icon="el-icon-share" @click="fenPei(info.row)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -133,18 +157,68 @@ export default {
     this.getList()
   },
   methods: {
+    async editFen() {
+      const {
+        data: {
+          meta: { msg, status }
+        }
+      } = await this.$http.put(`users/${this.userP.id}/role`, {
+        rid: this.userP.role_id
+      })
+      // console.log(msg, status)
+      if (status !== 200) {
+        return this.$message.error(msg)
+      }
+      this.$message.success(msg)
+      this.userPei = false
+      this.getList()
+    },
+    async fenPei(user) {
+      const {
+        data: {
+          data,
+          meta: { status }
+        }
+      } = await this.$http.get('roles')
+      console.log(data)
+
+      if (status === 200) {
+        this.options = data
+        this.userP = user
+        console.log(this.userP)
+        this.userPei = true
+      }
+    },
+    // 开关
+    async kGuan(user) {
+      console.log(user)
+      const {
+        data: {
+          meta: { msg, status }
+        }
+      } = await this.$http.put(`users/${user.id}/state/${user.mg_state}`)
+      console.log(msg, status)
+      if (status !== 200) {
+        return this.$message.error(msg)
+      }
+      this.$message.success(msg)
+    },
     // 修改
     editUser(id) {
-    //   console.log(id)
+      //   console.log(id)
       this.$refs.EditruleForm.validate(async valid => {
         // console.log(valid)
         if (valid === true) {
-          const {data:{meta:{status,msg}}} = await this.$http.put(`users/${id}`, this.editFrm)
-        //   console.log(status,msg)
-          if(status===200){
-              this.$message.success(msg)
-              this.editConfm=false
-              this.getList()
+          const {
+            data: {
+              meta: { status, msg }
+            }
+          } = await this.$http.put(`users/${id}`, this.editFrm)
+          //   console.log(status,msg)
+          if (status === 200) {
+            this.$message.success(msg)
+            this.editConfm = false
+            this.getList()
           }
         }
       })
@@ -231,7 +305,7 @@ export default {
           meta: { msg, status }
         }
       } = await this.$http.get('/users', { params: this.togo })
-    //   console.log(data, msg, status)
+        console.log(data, msg, status)
       if (status === 200) {
         this.tol = data.total
         this.userlist = data.users
@@ -246,9 +320,27 @@ export default {
       }
       // 校验成功，继续执行
       callback()
-      console.log(value)
+      // console.log(value)
     }
+
     return {
+      fenPrules: {
+        role_id: [{ required: true, message: '必须选一个', trigger: 'change' }]
+      },
+      // 用户分配
+      options: [
+        {
+          value: '选项1',
+          label: '黄金糕'
+        },
+        {
+          value: '选项2',
+          label: '双皮奶'
+        }
+      ],
+      value: '',
+      userP: {},
+      userPei: false,
       /* 修改默认开关 */
       editrules: {
         mobile: [{ validator: mobiles, trigger: 'blur' }]
