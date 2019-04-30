@@ -290,11 +290,6 @@ export default {
 }
 </script>
 
-<<<<<<< HEAD
-<style>
-
-  </style>
-=======
 <style lang="less">
 .el-main {
   div {
@@ -304,4 +299,3 @@ export default {
   }
 }
 </style>
->>>>>>> userList

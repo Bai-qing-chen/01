@@ -6,13 +6,14 @@ import Router from 'vue-router'
 
 import Login from '@/components/login.vue'
 /* 后台首页显示 布局 头部 侧边栏显示 */
-
+import Rights from '@/components/homeChild/rights'
 import Home from '@/components/home/home.vue'
 /* 用户列表展示 添加 删除 修改  */
 
 import Wol from '@/components/homeChild/wolCom.vue'
-import Rights from '@/components/homeChild/rights'
+
 import Roles from '@/components/roles/roles'
+import Cate from '../components/homeChild/cate'
 
 Vue.use(Router)
 
@@ -27,7 +28,8 @@ const router = new Router({
       children: [
         { path: '/users', component: Wol },
         { path: '/rights', component: Rights },
-        { path: '/roles', component: Roles }
+        { path: '/roles', component: Roles },
+        { path: '/categories', component: Cate }
       ]
     }
   ]
