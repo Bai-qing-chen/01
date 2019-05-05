@@ -13,7 +13,7 @@ import Home from '@/components/home/home.vue'
 import Wol from '@/components/homeChild/wolCom.vue'
 import Rights from '@/components/homeChild/rights'
 import Roles from '@/components/roles/roles'
-
+import Params from '@/components/homeChild/params'
 Vue.use(Router)
 
 const router = new Router({
@@ -27,7 +27,8 @@ const router = new Router({
       children: [
         { path: '/users', component: Wol },
         { path: '/rights', component: Rights },
-        { path: '/roles', component: Roles }
+        { path: '/roles', component: Roles },
+        { path: '/params', component: Params }
       ]
     }
   ]
